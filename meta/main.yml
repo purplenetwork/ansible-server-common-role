@@ -5,5 +5,9 @@ galaxy_info:
   company: Purple Network
   license: MIT
   min_ansible_version: 1.4
+  platforms:
+   - name: Ubuntu
+     versions:
+      - precise
   dependencies: []
 
