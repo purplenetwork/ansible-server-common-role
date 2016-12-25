@@ -1,1 +1,9 @@
-# My project's README
+- Add multiverse repo
+- Upgrade all packages to the latest version
+- Set timezone, set timezone var to change
+- Set the hostname
+- Install common packages
+    - python-software-properties
+    - htop
+    - wget
+    - curl  
