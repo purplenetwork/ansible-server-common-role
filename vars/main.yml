@@ -1,0 +1,2 @@
+---
+default_timezone: {{ default_timezone | default('Europe/Rome') }}
