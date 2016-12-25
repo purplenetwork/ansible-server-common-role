@@ -7,3 +7,5 @@
     - htop
     - wget
     - curl  
+    - mysql-client
+    - python-mysqldb
