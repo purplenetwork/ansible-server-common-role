@@ -1,3 +1,4 @@
 ---
 timezone: 'Europe/Rome'
-# hostname: 'myhostname'
+upgrade_dist: false
+
