@@ -69,20 +69,6 @@
 
   when: ansible_distribution == 'Ubuntu' and ansible_distribution_version != '16.04'
 
-#- name: "Update apt cache"
-#  apt: update_cache=yes cache_valid_time=3600
-#  become: yes
-#
-#- name: "Check for upgrade"
-#  command: /usr/lib/update-notifier/apt-check --package-names
-#  register: packages
-#  become: yes
-#
-#- name: "Upgrade all packages to the latest version"
-#  apt: update_cache=yes upgrade=dist
-#  when: packages.stderr != "" and upgrade_dist == true
-#  become: yes
-
 - name: Remove apt config used to workaround do-release-upgrade
   file:
     path: /etc/apt/apt.conf.d/local
@@ -156,9 +142,11 @@
   with_items:
     - python-software-properties
     - htop
+    - ncdu
     - wget
     - curl
     - mysql-client
     - python-mysqldb
     - acl
+    - zip
     - unzip
