@@ -30,9 +30,9 @@
         path: /etc/apt/apt.conf.d/local
         line: 'DPkg::options { "--force-confdef"; "--force-confnew"; }'
       become: yes
-
+      
     - name: Upgrade all packages to the latest version
-      apt: update_cache=yes upgrade=dist
+      apt: update_cache=yes upgrade=dist autoclean=yes
       become: yes
 
     - name: Ensure update-manager-core is installed.
@@ -55,6 +55,22 @@
       command: do-release-upgrade -f DistUpgradeViewNonInteractive
       become: yes
 
+    - name: Reboot the server.
+      command: /sbin/reboot
+      become: yes
+
+    - name: Wait for server to reboot.
+      wait_for:
+        host: "{{ ansible_ssh_host }}"
+        port: 22
+        state: started
+      connection: local
+      become: no
+
+    - name: Upgrade all packages to the latest version
+      apt: update_cache=yes upgrade=dist autoclean=yes
+      become: yes
+      
     - name: Reboot the server.
       command: /sbin/reboot
       become: yes
@@ -141,6 +157,7 @@
   become: yes
   with_items:
     - python-software-properties
+    - python-pip
     - htop
     - ncdu
     - wget
