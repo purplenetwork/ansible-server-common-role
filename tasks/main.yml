@@ -39,48 +39,45 @@
       apt: name=update-manager-core state=present
       become: yes
 
-    - name: Reboot the server.
-      command: /sbin/reboot
+    - name: Restart server
+      shell: sleep 2 && shutdown -r now "Ansible system package upgraded" removes=/var/run/reboot-required
+      async: 1
+      poll: 0
       become: yes
+      ignore_errors: true
 
     - name: Wait for server to reboot.
-      wait_for:
-        host: "{{ ansible_ssh_host }}"
-        port: 22
-        state: started
-      connection: local
+      wait_for_connection:
       become: no
 
     - name: Run do-release-upgrade non-interactively.
       command: do-release-upgrade -f DistUpgradeViewNonInteractive
       become: yes
 
-    - name: Reboot the server.
-      command: /sbin/reboot
+    - name: Restart server
+      shell: sleep 2 && shutdown -r now "Ansible system package upgraded" removes=/var/run/reboot-required
+      async: 1
+      poll: 0
       become: yes
+      ignore_errors: true
 
     - name: Wait for server to reboot.
-      wait_for:
-        host: "{{ ansible_ssh_host }}"
-        port: 22
-        state: started
-      connection: local
+      wait_for_connection:
       become: no
 
-    - name: Upgrade all packages to the latest version
+    - name: Upgrade all packages to the latest version post distro upgrade
       apt: update_cache=yes upgrade=dist autoclean=yes
       become: yes
       
-    - name: Reboot the server.
-      command: /sbin/reboot
+    - name: Restart server
+      shell: sleep 2 && shutdown -r now "Ansible system package upgraded" removes=/var/run/reboot-required
+      async: 1
+      poll: 0
       become: yes
+      ignore_errors: true
 
     - name: Wait for server to reboot.
-      wait_for:
-        host: "{{ ansible_ssh_host }}"
-        port: 22
-        state: started
-      connection: local
+      wait_for_connection:
       become: no
 
   when: ansible_distribution == 'Ubuntu' and ansible_distribution_version != '16.04'
@@ -99,27 +96,20 @@
   tags:
     - upgrade
 
-- name: "Check if a reboot is required"
-  register: file
-  stat: path=/var/run/reboot-required get_md5=no
+- name: Reboot if required
+  shell: sleep 2 && shutdown -r now "Ansible system package upgraded" removes=/var/run/reboot-required
+  async: 1
+  poll: 0
   become: yes
-  tags:
-    - upgrade
-
-- name: "Reboot"
-  command: /sbin/reboot
-  when: file.stat.exists == true
-  become: yes
+  ignore_errors: true
   tags:
     - upgrade
 
 - name: Wait for server to reboot.
-  wait_for:
-    host: "{{ ansible_ssh_host }}"
-    port: 22
-    state: started
-  connection: local
+  wait_for_connection:
   become: no
+  tags:
+    - upgrade
 
 - name: "Validate timezone variable"
   stat: path=/usr/share/zoneinfo/{{ timezone }}
