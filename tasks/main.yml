@@ -35,8 +35,16 @@
         line: 'DPkg::options { "--force-confdef"; "--force-confnew"; }'
       become: yes
       
+    - name: Remove old packages
+      shell: apt autoremove --purge
+      become: yes
+
     - name: Upgrade all packages to the latest version
       apt: update_cache=yes upgrade=dist autoclean=yes
+      become: yes
+
+    - name: Remove old packages
+      shell: apt autoremove --purge
       become: yes
 
     - name: Ensure update-manager-core is installed.
@@ -93,10 +101,22 @@
   become: yes
   tags:
     - upgrade
+    
+- name: Remove old packages
+  shell: apt autoremove --purge
+  become: yes
+  tags:
+    - upgrade
 
 - name: Safe upgrade all packages to the latest version
   apt: update_cache=yes upgrade=safe autoclean=yes
   become: true
+  tags:
+    - upgrade
+
+- name: Remove old packages
+  shell: apt autoremove --purge
+  become: yes
   tags:
     - upgrade
 
