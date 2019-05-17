@@ -166,7 +166,7 @@
   lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1' line='127.0.0.1 localhost {{ hostname }}' owner=root group=root mode=0644
   when: hostname is defined
 
-- name: "Install common packages"
+- name: "Install common packages for 16.04"
   apt: name={{ item }} state=present
   become: yes
   with_items:
@@ -181,3 +181,21 @@
     - acl
     - zip
     - unzip
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+
+- name: "Install common packages for 18.04"
+  apt: name={{ item }} state=present
+  become: yes
+  with_items:
+    - software-properties-common
+    - python-pip
+    - htop
+    - ncdu
+    - wget
+    - curl
+    - mysql-client
+    - python-mysqldb
+    - acl
+    - zip
+    - unzip
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '18.04'
