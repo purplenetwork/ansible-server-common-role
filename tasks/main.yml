@@ -2,7 +2,7 @@
 - name: "Ubuntu version"
   debug:
     msg: "Ubuntu version: {{ ansible_distribution }} {{ ansible_distribution_version }}"
-   
+
 - name: "Add multiverse repo"
   apt_repository:
     repo: "{{item}}"
@@ -34,7 +34,7 @@
         path: /etc/apt/apt.conf.d/local
         line: 'DPkg::options { "--force-confdef"; "--force-confnew"; }'
       become: yes
-      
+
     - name: Remove old packages
       shell: apt autoremove --purge
       become: yes
@@ -80,7 +80,7 @@
     - name: Upgrade all packages to the latest version post distro upgrade
       apt: update_cache=yes upgrade=dist autoclean=yes
       become: yes
-      
+
     - name: Restart server
       shell: sleep 2 && shutdown -r now "Ansible system package upgraded" removes=/var/run/reboot-required
       async: 1
@@ -92,7 +92,7 @@
       wait_for_connection:
       become: no
 
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version != '16.04'
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version != '16.04' and ansible_distribution_version != '18.04'
 
 - name: Remove apt config used to workaround do-release-upgrade
   file:
@@ -101,7 +101,7 @@
   become: yes
   tags:
     - upgrade
-    
+
 - name: Remove old packages
   shell: apt autoremove --purge
   become: yes
